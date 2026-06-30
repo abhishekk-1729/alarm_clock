@@ -29,30 +29,47 @@ No `pip install` is required to run the tool.
 
 ## Installation
 
-You can run it directly with Python, or install it so the `alarm` command
-is available anywhere on your system.
+The simplest and most reliable way to use this tool is a shell alias —
+no `pip install` required. A `pip install -e .` option is also documented
+below if you'd prefer a real `alarm` command without the alias, but on
+some Python setups (conda environments, certain pip versions) it can fail
+due to `setuptools` not being available in the build environment, so the
+alias is the recommended path.
 
-### Option A: Run directly, no installation
+### Option A: Shell alias (recommended)
+
+From inside the project folder, run:
 
 ```bash
-cd alarm_clock
-python3 alarm.py --help
+echo 'alias alarm="python3 $HOME/Downloads/alarm_clock/alarm.py"' >> ~/.zshrc
+source ~/.zshrc
 ```
 
-Every example below assumes you've installed the `alarm` command (Option
-B). If you're running it directly, just replace `alarm` with
-`python3 alarm.py` in any command.
+If you cloned or unzipped the project somewhere other than
+`~/Downloads/alarm_clock`, adjust the path accordingly. If your shell is
+bash instead of zsh, use `~/.bash_profile` in place of `~/.zshrc`.
 
-### Option B: Install as the `alarm` command (recommended)
+Verify it worked:
+
+```bash
+alarm --help
+```
+
+Every example in this README assumes the `alarm` command is available
+this way. If you'd rather not set up an alias, just replace `alarm` with
+`python3 alarm.py` (run from inside the project folder) in any command
+below.
+
+### Option B: Install as a real command via pip
 
 ```bash
 cd alarm_clock
 pip install --user -e .
 ```
 
-This installs an `alarm` command on your PATH using the standard library
-only (`setuptools` is the one tool needed to install it, not to run it).
-Verify it worked:
+This installs an `alarm` command on your PATH using only the standard
+library at runtime (`setuptools` is needed just for the install step, not
+to run the tool). Verify it worked:
 
 ```bash
 alarm --help
@@ -67,6 +84,18 @@ export PATH="$HOME/Library/Python/3.9/bin:$PATH"
 
 (Adjust the Python version number to match yours, or run
 `python3 -m site --user-base` to find the correct directory.)
+
+If installation fails with an error mentioning `setuptools is not
+available in the build environment`, either run
+`pip install --user setuptools` first and retry, or add the
+`--no-build-isolation` flag:
+
+```bash
+pip install --user -e . --no-build-isolation
+```
+
+If neither works, fall back to Option A — the alias works everywhere
+regardless of your pip setup.
 
 ## Quick start
 
@@ -234,8 +263,19 @@ interrupted write won't corrupt your saved alarms.
 
 ## Uninstalling
 
+If you used the shell alias (Option A), remove the `alias alarm=...` line
+from `~/.zshrc` (or `~/.bash_profile`), then run `source ~/.zshrc` again,
+or just open a new terminal window.
+
+If you installed via pip (Option B):
+
 ```bash
 pip uninstall alarm-clock
+```
+
+Either way, to remove your saved alarms and logs:
+
+```bash
 rm -rf ~/.alarm_clock
 ```
-# alarm_clock
+```
